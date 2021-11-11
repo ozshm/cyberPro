@@ -17,14 +17,18 @@ from django.contrib import admin
 from django.urls import path
 from pages.views import login_view, register_view, change_pwd_view, forget_pwd_view, about_view, redirect_to_login_view
 
+from users.views import user_create_view
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', redirect_to_login_view),
     path('login/', login_view),
-    path('register/', register_view),
+    path('register/', user_create_view),
     path('change-pwd/', change_pwd_view),
     path('forget-pwd/', forget_pwd_view),
     path('about/', about_view),
+    
+
 
 ]
