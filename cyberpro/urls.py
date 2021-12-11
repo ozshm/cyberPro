@@ -19,16 +19,17 @@ from pages.views import login_view, register_view, change_pwd_view, forget_pwd_v
 
 from users.views import user_create_view
 
+from clients.views import client_create_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', redirect_to_login_view),
     path('login/', login_view),
     path('register/', user_create_view),
+    path('clients/', client_create_view),
     path('change-pwd/', change_pwd_view),
     path('forget-pwd/', forget_pwd_view),
     path('about/', about_view),
     
-
 
 ]
