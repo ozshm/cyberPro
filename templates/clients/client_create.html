@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method='GET'> 
+<input type='text' name='fname' placeholder="Client First Name" /> <br>
+<input type='text' name='lname' placeholder="Client Last Name"/> <br>
+Secure?<input type='checkbox' name='secure' value='secure' checked/> 
+<input type='submit' value='Save'/>
+</form>
+
+
+{% if client_fname or client_lname %}
+    {% if secure == 'secure' %} <!--- secure mode -->
+    <h2> {{ client_fname }}  {{ client_lname }} has been added succesfully! (secure)</h2>
+    {% else %} <!--- insecure mode -->
+    <h2> {{ client_fname | safe }}  {{ client_lname | safe }} has been added succesfully! (insecure)</h2>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
