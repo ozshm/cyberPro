@@ -7,6 +7,7 @@ from .models import Client
 
 def client_create_view(request):
 
+
     clientFirstName = request.GET.get('fname', None)
     clientLastName = request.GET.get('lname', None)
     isSecure = request.GET.get('secure', None)
@@ -18,5 +19,13 @@ def client_create_view(request):
         'secure': isSecure
     }
 
-    return render(request, "clients/client_create.html", context)
+    if clientFirstName and clientLastName and isSecure:
+        saveclient = Client(name= clientFirstName,lastName= clientLastName)
+        saveclient.save()
 
+    
+    response =  render(request, "clients/client_create.html", context)
+
+    response.set_cookie('isSecure', isSecure)
+    
+    return response
