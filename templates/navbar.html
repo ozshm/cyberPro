@@ -26,22 +26,33 @@
       color: black;
     }
     
-    .topnav a.active {
+    .topnav.secure a.active {
       background-color: #2659b0bb;
+      color: white;
+    }
+
+    .topnav.insecure a.active {
+      background-color: #ed0946bb;
       color: white;
     }
     </style>
     </head>
     <body>
     
-    <div class="topnav">
-      <a {% if page_name == 'login' %} class="active" {% endif %} href="../login">Login</a>
-      <a {% if page_name == 'register' %} class="active" {% endif %} href="../register">Register</a>
-      <a {% if page_name == 'clients' %} class="active" {% endif %} href="../clients">Clients</a>
-      <a {% if page_name == 'change_pwd' %} class="active" {% endif %} href="../change-pwd">Change Password</a>
-      <a {% if page_name == 'forget_pwd' %} class="active" {% endif %} href="../forget-pwd">Forget Password?</a>
-      <a {% if page_name == 'about' %} class="active" {% endif %} href="../about">About</a>
-    </div>
+      <div id="topnav" class="topnav secure">
+        <a {% if page_name == 'login' %} class="active" {% endif %} href="../login">Login</a>
+        <a {% if page_name == 'register' %} class="active" {% endif %} href="../register">Register</a>
+        <a {% if page_name == 'clients' %} class="active" {% endif %} href="../clients">Clients</a>
+        <a {% if page_name == 'change_pwd' %} class="active" {% endif %} href="../change-pwd">Change Password</a>
+        <a {% if page_name == 'forget_pwd' %} class="active" {% endif %} href="../forget-pwd">Forget Password?</a>
+        <a {% if page_name == 'about' %} class="active" {% endif %} href="../about">About</a>
+      </div>
+
+
+
+
+
+
     
     </body>
     

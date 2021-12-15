@@ -3,14 +3,18 @@ from django.http import HttpResponse
 # Create your views here.
 
 def redirect_to_login_view(request, *args, **kwargs):
-    return redirect('/login')
-    
+    response = redirect('/login')
+    response.set_cookie('isSecure', 'true')
+    return response
+
 def login_view(request, *args, **kwargs):
     # if request.COOKIES['isSecure'] == 'secure':
     #     print("in login page, we are secure!")
+    isSecure = request.COOKIES['isSecure'] == 'true'
     my_context = {
         'title': 'welcome test',
         'page_name': 'login',
+        'isSecure' : isSecure,
     }
     return render(request, 'login.html', my_context)
 
