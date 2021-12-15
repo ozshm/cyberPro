@@ -37,9 +37,12 @@ function setCookie(cname, cvalue, exdays = 2) {
     if (toggle.checked){
         setCookie('isSecure', 'true')
         secure_design()
+        secure_clients_page()
+        clearURL()
     } else {
         setCookie('isSecure', 'false')
         insecure_design()
+        insecure_clients_page()
     }
 };
 
@@ -48,10 +51,13 @@ function update_toggle(){
     if (getCookie('isSecure') == 'true'){
         document.getElementById("toggle-button").setAttribute("checked", "checked");
         secure_design()
+        secure_clients_page()
     } else{
         document.getElementById("toggle-button").removeAttribute("checked");
         insecure_design()
+        insecure_clients_page()
     }
+
 }
 
 
@@ -65,6 +71,24 @@ function insecure_design(){
     document.getElementById('topnav').classList.remove("secure")
     document.getElementById('topnav').classList.add("insecure")
     document.getElementById('mode-text').innerHTML = "Mode: Insecure";
+}
+
+function secure_clients_page(){
+    document.getElementById("insecure-form").style.display = "none";
+    document.getElementById("secure-form").style.display = "block";
+
+}
+
+function insecure_clients_page(){
+    document.getElementById("secure-form").style.display = "none";
+    document.getElementById("insecure-form").style.display = "block";
+
+}
+
+function clearURL(){
+    let currentURL = document.URL
+    window.location.assign(currentURL.split('?')[0])
+
 }
 
 update_toggle();

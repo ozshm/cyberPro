@@ -8,24 +8,28 @@ from .models import Client
 def client_create_view(request):
 
 
-    clientFirstName = request.GET.get('fname', None)
-    clientLastName = request.GET.get('lname', None)
-    isSecure = request.GET.get('secure', None)
+    if request.method == 'GET':
+        clientFirstName = request.GET.get('fname', None)
+        clientLastName = request.GET.get('lname', None)
+    else:
+        clientFirstName = request.POST.get('fname', None)
+        clientLastName = request.POST.get('lname', None)
+
+
+    # clientFirstName = request.GET.get('fname', None)
+    # clientLastName = request.GET.get('lname', None)
+    # # isSecure = request.GET.get('secure', None)
 
     context = {
         'page_name': 'clients',
         'client_fname': clientFirstName,
         'client_lname': clientLastName,
-        'secure': isSecure
+        'isSecure': request.COOKIES['isSecure'] == 'true'
     }
 
-    if clientFirstName and clientLastName and isSecure:
-        saveclient = Client(name= clientFirstName,lastName= clientLastName)
-        saveclient.save()
+    # if clientFirstName and clientLastName and isSecure:
+    #     saveclient = Client(name= clientFirstName,lastName= clientLastName)
+    #     saveclient.save()
 
     
-    response =  render(request, "clients/client_create.html", context)
-
-    response.set_cookie('isSecure', isSecure)
-    
-    return response
+    return render(request, "clients/client_create.html", context)

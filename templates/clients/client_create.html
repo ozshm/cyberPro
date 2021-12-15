@@ -2,16 +2,28 @@
 
 {% block content %}
 
+
+<div id="insecure-form"> 
 <form method='GET'> 
-<input type='text' name='fname' placeholder="Client First Name" /> <br>
-<input type='text' name='lname' placeholder="Client Last Name"/> <br>
-Secure?<input type='checkbox' name='secure' value='secure' checked/> 
+<input type='text' name='fname' placeholder="(GET)Client First Name" /> <br>
+<input type='text' name='lname' placeholder="(GET)Client Last Name"/> <br>
+<!-- Secure?<input type='checkbox' name='secure' value='secure' checked/>  -->
 <input type='submit' value='Save'/>
 </form>
+</div>
+
+<div id="secure-form"> 
+<form method='POST'> {% csrf_token %}
+    <input type='text' name='fname' placeholder="(POST)Client First Name" /> <br>
+    <input type='text' name='lname' placeholder="(POST)Client Last Name"/> <br>
+    <!-- Secure?<input type='checkbox' name='secure' value='secure' checked/>  -->
+    <input type='submit' value='Save'/>
+    </form>
+</div>
 
 
 {% if client_fname or client_lname %}
-    {% if secure == 'secure' %} <!--- secure mode -->
+    {% if isSecure %} <!--- secure mode -->
     <h2> {{ client_fname }}  {{ client_lname }} has been added succesfully! (secure)</h2>
     {% else %} <!--- insecure mode -->
     <h2> {{ client_fname | safe }}  {{ client_lname | safe }} has been added succesfully! (insecure)</h2>
