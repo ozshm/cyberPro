@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import User
+from .models import User, ChangePwd
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -9,3 +9,15 @@ class UserForm(forms.ModelForm):
             'username',
             'password',
         ]
+
+class ChangePwdForm(forms.ModelForm):
+    class Meta:
+        model = ChangePwd
+        fields = [
+            'existingPassword',
+            'newPassword',
+        ]
+        labels = {
+            'existingPassword': 'Existing Password',
+            'newPassword': 'New Password',
+        }

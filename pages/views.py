@@ -14,20 +14,6 @@ def login_view(request, *args, **kwargs):
     }
     return render(request, 'login.html', my_context)
 
-def register_view(request, *args, **kwargs):
-    my_context = {
-        'title': 'register',
-        'page_name': 'register',
-    }
-    return render(request, 'register.html', my_context)   
-
-def change_pwd_view(request, *args, **kwargs):
-    my_context = {
-        'title': 'change password',
-        'page_name': 'change_pwd',
-    }
-    return render(request, 'change_pwd.html', my_context)
-
 def forget_pwd_view(request, *args, **kwargs):
     my_context = {
         'title': 'forget password',
