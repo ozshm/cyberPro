@@ -1,10 +1,22 @@
 <!DOCTYPE html>
+{% load static %}   
 <html>
     <head>
+        
+        <link rel="stylesheet" href='{% static "/css/mystyle.css" %}'>
         <title>myDjango</title>
     </head>
     <body>
+
+        <script type="text/javascript" src='{% static "js/myscript.js" %}' defer></script>
+
         {% include 'navbar.html' %}
+
+        <h4 id='mode-text' style="margin-left:20px" >Mode: Secure</h4>
+        <label class="switch" style="margin-left:32px">
+            <input id="toggle-button" type="checkbox" onchange="toggle_clicked(this)" checked >
+            <span class="slider round"></span>
+          </label>
 
         <h1>Communication LTD</h1>
 

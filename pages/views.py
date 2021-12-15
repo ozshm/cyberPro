@@ -3,8 +3,10 @@ from django.http import HttpResponse
 # Create your views here.
 
 def redirect_to_login_view(request, *args, **kwargs):
-    return redirect('/login')
-    
+    response = redirect('/login')
+    response.set_cookie('isSecure', 'true')
+    return response
+
 def login_view(request, *args, **kwargs):
     # if request.COOKIES['isSecure'] == 'secure':
     #     print("in login page, we are secure!")
