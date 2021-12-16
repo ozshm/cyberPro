@@ -1,6 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p> This is login page</p>
-<p>Hello {{ request.user }}!</p>
+<!--Login--> 
+<div class="login">
+    <div class="login-triangle"></div>
+    {{request.user}}
+  <div class="login-container">
+    <h1 class="login-header">Login</h1>
+    <form class="login-container" method="POST">
+      {% csrf_token %}
+      {{ login_form }}
+      <div class="col-xl-9 mx-auto">
+        <div class="col-xl-5 mx-auto" >
+          <button class="btn btn-primary" type="submit">Login</button>
+        </div>
+      </div> 
+    </form>
+  </div>
+  
+ 
 {% endblock %}

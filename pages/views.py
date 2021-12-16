@@ -7,14 +7,14 @@ def redirect_to_login_view(request, *args, **kwargs):
     response.set_cookie('isSecure', 'true')
     return response
 
-def login_view(request, *args, **kwargs):
-    # if request.COOKIES['isSecure'] == 'secure':
-    #     print("in login page, we are secure!")
-    my_context = {
-        'title': 'welcome test',
-        'page_name': 'login',
-    }
-    return render(request, 'login.html', my_context)
+# def login_view(request, *args, **kwargs):
+#     # if request.COOKIES['isSecure'] == 'secure':
+#     #     print("in login page, we are secure!")
+#     my_context = {
+#         'title': 'welcome test',
+#         'page_name': 'login',
+#     }
+#     return render(request, 'login.html', my_context)
 
 def forget_pwd_view(request, *args, **kwargs):
     my_context = {
