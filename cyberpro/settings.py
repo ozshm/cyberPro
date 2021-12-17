@@ -10,11 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
+import os, json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+with open(os.path.join(BASE_DIR, 'cyberpro/pass_req.json')) as f:
+    PASS_REQ = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -127,4 +129,42 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "statics"),
     'statics'
+]
+
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django_password_validators.password_character_requirements.password_validation.PasswordCharacterValidator',
+        'OPTIONS': {
+                'min_length_digit': PASS_REQ["password_content"]["min_length_digit"],
+                'min_length_alpha': PASS_REQ["password_content"]["min_length_alpha"],
+                'min_length_special': PASS_REQ["password_content"]["min_length_special"],
+                'min_length_lower': PASS_REQ["password_content"]["min_length_lower"],
+                'min_length_upper': PASS_REQ["password_content"]["min_length_upper"],
+                'special_characters': PASS_REQ["password_content"]["special_characters"]
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': PASS_REQ["min_length"],
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+        {
+        'NAME': 'django_password_validators.password_history.password_validation.UniquePasswordsValidator',
+        'OPTIONS': {
+            'last_passwords': PASS_REQ["password_history"]  # Only the last 3 passwords entered by the user
+        }
+    },
+]
+
+# Password hashers
+# https://docs.djangoproject.com/en/3.2/topics/auth/passwords/
+PASSWORD_HASHERS = [
+    # Default Haser - Uses PBKDF2 + HMAC + SHA256
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
