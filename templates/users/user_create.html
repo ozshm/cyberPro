@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method='POST'>
+
+{% include 'password-policy.html' %}
+
+<form method='POST' style="width:50%;">
 {{ form.as_p }} {% csrf_token %}
 <input type='submit' value='Register' />
 </form>
