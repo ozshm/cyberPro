@@ -5,8 +5,8 @@
 
 <div id="insecure-form"> 
 <form method='GET'> 
-<input type='text' name='fname' placeholder="(GET)Client First Name" required/> <br>
-<input type='text' name='lname' placeholder="(GET)Client Last Name" required/> <br>
+    <p style="display:inline;"> First Name: </p><input type='text' name='fname' placeholder="(GET)Client First Name" required/> <br><br>
+    <p style="display:inline;"> Last Name: </p><input type='text' name='lname' placeholder="(GET)Client Last Name" required/> <br><br>
 <!-- Secure?<input type='checkbox' name='secure' value='secure' checked/>  -->
 <input type='submit' value='Save'/>
 </form>
@@ -14,8 +14,8 @@
 
 <div id="secure-form"> 
 <form method='POST'> {% csrf_token %}
-    <input type='text' name='fname' placeholder="(POST)Client First Name" required/> <br>
-    <input type='text' name='lname' placeholder="(POST)Client Last Name" required/> <br>
+    <p style="display:inline;"> First Name: </p><input type='text' name='fname' placeholder="Client First Name" required/> <br><br>
+    <p style="display:inline;"> Last Name: </p><input type='text' name='lname' placeholder="Client Last Name" required/> <br><br>
     <!-- Secure?<input type='checkbox' name='secure' value='secure' checked/>  -->
     <input type='submit' value='Save'/>
     </form>
@@ -25,23 +25,34 @@
 
 {% if client_fname or client_lname %}
     {% if isSecure %} <!--- secure mode -->
-    <h4> {{ client_fname }}  {{ client_lname }} has been added succesfully! (secure)</h2>
+    <h4> {{ client_fname }}  {{ client_lname }} has been added succesfully!</h2>
     {% else %} <!--- insecure mode -->
-    <h4> {{ client_fname | safe }}  {{ client_lname | safe }} has been added succesfully! (insecure)</h2>
+    <h4> {{ client_fname | safe }}  {{ client_lname | safe }} has been added succesfully!</h2>
     {% endif %}
 {% endif %}
 
 
-{% if last_client %}
+<!-- {% if last_client %}
+    <h3> Last Client Added:</h3>
     {% if isSecure %}
-     <h3> Last Client Added:</h3>
      <h3>{{ last_client.name }} {{ last_client.lastName}} </h3>
      {% else %}
-     <h3> Last Client Added:</h4>
      <h3>{{ last_client.name | safe}} {{ last_client.lastName | safe}} </h3>
+     <h1>{{ last_client | safe}} </h1>
      {% endif %}
 
-{% endif %} 
+{% endif %}  -->
+
+<h3> Last Client Added:</h3>
+{% for client in c %}
+{% if isSecure %}
+<h3>{{ client.name }} {{ client.lastName }} </h3>
+{% else %}
+<h3>{{ client.name | safe}} {{ client.lastName | safe}} </h3>
+{% endif %}
+{% empty %}
+<h3>no clients </h3>
+{% endfor %}
 
 
 
