@@ -45,15 +45,22 @@ def login_request(request):
             if user is not None:
                 login(request, user,
                       backend='django.contrib.auth.backends.ModelBackend')
+                
                 # Redirect to homepage
-                return redirect('/')
+                # print("login!!!!")
+                response = redirect('/clients')
+                response.set_cookie("isAuthenticated", "true")
+                return response
             else:
                print("error")
         else:
             print("username or password error")
             return HttpResponseRedirect("/login")
     form = AuthenticationForm()
-    return render(request=request, template_name="../templates/login.html", context={"login_form": form})
+    return render(request=request, template_name="../templates/login.html",
+     context={
+         "login_form": form,
+        })
 
 def user_change_pwd_view(request):
     form = ChangePwdForm(request.POST or None)
