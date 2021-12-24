@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import User, ChangePwd
+from .models import ForgotPwd, User, ChangePwd
 
 class UserForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -21,4 +21,15 @@ class ChangePwdForm(forms.ModelForm):
         labels = {
             'existingPassword': 'Existing Password',
             'newPassword': 'New Password',
+        }
+
+
+class ForgotPwdForm(forms.ModelForm):
+    class Meta:
+        model = ForgotPwd
+        fields = [
+            'emailAddress',
+        ]
+        labels = {
+            'emailAddress': 'Email Address',
         }

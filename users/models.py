@@ -9,3 +9,7 @@ class User(models.Model):
 class ChangePwd(models.Model):
     existingPassword = models.CharField(max_length=50)
     newPassword = models.CharField(max_length=50)
+
+class ForgotPwd(models.Model):
+    emailAddress = models.EmailField(max_length=50)
+    
