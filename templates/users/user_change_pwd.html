@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+{% include 'password-policy.html' %}
+
 <h3>Change Password</h3>
 <form method='POST'>
 {{ form.as_p }} {% csrf_token %}

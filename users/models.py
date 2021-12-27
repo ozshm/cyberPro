@@ -13,3 +13,5 @@ class ChangePwd(models.Model):
 class ForgotPwd(models.Model):
     emailAddress = models.EmailField(max_length=50)
     
+class VerifyCode(models.Model):
+    resetCode = models.CharField(max_length=50)
