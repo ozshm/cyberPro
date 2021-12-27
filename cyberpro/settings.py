@@ -175,4 +175,5 @@ PASSWORD_HASHERS = [
     # Default Haser - Uses PBKDF2 + HMAC + SHA256
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher'
 ]

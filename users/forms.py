@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import ForgotPwd, User, ChangePwd, VerifyCode
+from .models import User, ChangePwd, VerifyCode
 
 class UserForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -23,15 +23,8 @@ class ChangePwdForm(forms.ModelForm):
             'newPassword': 'New Password',
         }
 
-class ForgotPwdForm(forms.ModelForm):
-    class Meta:
-        model = ForgotPwd
-        fields = [
-            'emailAddress',
-        ]
-        labels = {
-            'emailAddress': 'Email Address',
-        }
+class ForgotPwdForm(forms.Form):
+    email_address = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
 
 class VerifyCodeForm(forms.ModelForm):
     class Meta:

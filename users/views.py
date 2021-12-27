@@ -98,14 +98,14 @@ def forgot_pwd_view(request):
     if form.is_valid():
         
         # TODO: Add email query to the DB to verify user exists
-        email = form.cleaned_data.get('email')
+        email = form.cleaned_data.get('email_address')
         if email is not None:
             hashed_code = generate_hased_code()
             subject = 'Communication LTD Password Resetting'
-            html_message = render_to_string('forgot_pwd/password_reset_email', {'hashed_code' : hashed_code})
+            html_message = render_to_string('forgot_pwd/password_reset_email.html', {'hashed_code' : hashed_code})
             plain_message = strip_tags(html_message) 
             email_from = settings.EMAIL_HOST_USER
-            recipient_list = [User.email, ]
+            recipient_list = [email, ]
             send_mail( subject, plain_message, email_from, recipient_list )
     
             return redirect('/sent')

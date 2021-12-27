@@ -37,7 +37,7 @@ urlpatterns = [
     path('change-pwd/done', user_changed_pwd_successfully_view),
     path('forgot-pwd/', forgot_pwd_view),
     path('forgot-pwd/sent/', email_sent_view),
-    path('verify-code/', verify_code_view),
+    path('verify-code/', verify_code_view, name='verify-code'),
     path('about/', about_view),
     path('logout/', logout_request)
     
