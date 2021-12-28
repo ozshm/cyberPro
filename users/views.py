@@ -17,10 +17,7 @@ def load_user_create_requierments(path_to_req):
         data = json.load(file)
     return data
 
-def is_valid_password(password, password_repeat):
-    if password != password_repeat:
-        return False
-
+def is_valid_password(password):
     count_digit = sum(c.isdigit() for c in password)
     count_alpha = sum(c.isalpha() for c in password)
     count_lower = sum(c.islower() for c in password)
@@ -43,12 +40,18 @@ def is_valid_password(password, password_repeat):
     if count_special_char < req['password_content']['min_length_special']:
         return False
     return True
+
+def is_difference_password(password, password_repeat):
+    return password != password_repeat
  
 def user_create_view(request):
     form = UserForm(request.POST or None)
     if form.is_valid():
-        if not is_valid_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
+        if not is_valid_password(form.cleaned_data['password']):
             messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            return HttpResponseRedirect('/register/')
+        if not is_difference_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
+            messages.info(request, "The passwords that not match, please try again.")
             return HttpResponseRedirect('/register/')
         user = User.objects.create_user(
                     form.cleaned_data['username'],
