@@ -7,10 +7,11 @@ class User(models.Model):
     password = models.CharField(max_length=50)
     resetCode = models.CharField(max_length=50)
     lastPasswords = models.JSONField()
+    email_address = models.EmailField(max_length=50)
 
 class ChangePwd(models.Model):
     existingPassword = models.CharField(max_length=50)
     newPassword = models.CharField(max_length=50)
     
-class VerifyCode(models.Model):
-    resetCode = models.CharField(max_length=50)
+# class VerifyCode(models.Model):
+#     resetCode = models.CharField(max_length=50)

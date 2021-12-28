@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import User, ChangePwd, VerifyCode
+from .models import User, ChangePwd
 
 class UserForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -28,7 +28,7 @@ class ForgotPwdForm(forms.Form):
 
 class VerifyCodeForm(forms.ModelForm):
     class Meta:
-        model = VerifyCode
+        model = User
         fields = [
             'resetCode',
         ]
