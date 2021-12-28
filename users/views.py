@@ -42,7 +42,7 @@ def is_valid_password(password):
     return True
 
 def is_difference_password(password, password_repeat):
-    return password != password_repeat
+    return password == password_repeat
  
 def user_create_view(request):
     form = UserForm(request.POST or None)
