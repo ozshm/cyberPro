@@ -65,7 +65,7 @@ def user_create_view(request):
         form = UserForm()
     context = {
         'form': form,
-        'page_name': 'login',
+        'page_name': 'register',
     }
 
     return render(request, "users/user_create.html", context)
