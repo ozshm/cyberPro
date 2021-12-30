@@ -94,14 +94,9 @@ def login_request(request):
                       backend='django.contrib.auth.backends.ModelBackend')
                 
                 # Redirect to homepage
-                # print("login!!!!")
                 response = redirect('/clients')
                 response.set_cookie("isAuthenticated", "true")
                 return response
-            else:
-               print("error")
-        else:
-            print("username or password error")
             return HttpResponseRedirect("/login")
     form = AuthenticationForm()
     return render(request=request, template_name="../templates/login.html",
@@ -116,8 +111,6 @@ def user_change_pwd_view(request):
         form.save()
         form = ChangePwdForm()
         return redirect('/done')
-    else:
-        print('Error')
     context = {
         'form': form,
         'page_name': 'change password',
@@ -126,7 +119,6 @@ def user_change_pwd_view(request):
 
 
 def logout_request(request):
-    print("sup")
     logout(request)
     return redirect('/')
 
@@ -200,8 +192,6 @@ def verify_code_view(request):
             'page_name': 'verify reset code',
             }
             return render(request, "forgot_pwd/password_reset_verify_code.html", context)
-    else:
-        print('Error')
     context = {
         'form': form,
         'page_name': 'verify reset code',
@@ -225,11 +215,20 @@ def reset_pwd_view(request):
             'page_name': 'reset password',
             }
             return render(request, "users/user_reset_pwd.html", context)
-        return redirect('/change-pwd/done')
+        u = User.objects.get(username = request.user)
+        if(u is not None):
+            u.set_password(form.cleaned_data['new_password'])
+            u.save()
+            return redirect('/change-pwd/done')
+        else:
+            context = {
+                'form': form,
+                'page_name': 'reset password',
+            }
+            return render(request, "users/user_reset_pwd.html", context)
     else:
-        print('Error')
-    context = {
-        'form': form,
-        'page_name': 'reset password',
-    }
-    return render(request, "users/user_reset_pwd.html", context)
+        context = {
+            'form': form,
+            'page_name': 'reset password',
+        }
+        return render(request, "users/user_reset_pwd.html", context)
