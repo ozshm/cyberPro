@@ -102,6 +102,7 @@ def login_request(request):
     return render(request=request, template_name="../templates/login.html",
      context={
          "login_form": form,
+         "page_name": "login",
         })
 
 def user_change_pwd_view(request):
