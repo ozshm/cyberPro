@@ -141,13 +141,12 @@ def generate_hased_code():
 def forgot_pwd_view(request):
     form = ForgotPwdForm(request.POST or None)
     if form.is_valid():
-        
-        # TODO: Add email query to the DB to verify user exists
-        email = form.cleaned_data.get('email_address')
-        get_user_email = f"SELECT * FROM users_user WHERE email = '%s';" % (email)
-        res = User.objects.raw(get_user_email)
-        if res is not None:
+        email_user = form.cleaned_data.get('email_address')
+        found_user = User.objects.filter(email = email_user)
+        if found_user.exists():
             hashed_code = generate_hased_code()
+            print(User.objects.values())
+            found_user.cyberproUser.resetCode = hashed_code
             subject = 'Communication LTD Password Resetting'
             html_message = render_to_string('forgot_pwd/password_reset_email.html', 
             {
@@ -158,12 +157,11 @@ def forgot_pwd_view(request):
             })
             plain_message = strip_tags(html_message) 
             email_from = settings.EMAIL_HOST_USER
-            recipient_list = [email, ]
+            recipient_list = [email_user, ]
             send_mail( subject, plain_message, email_from, recipient_list )
-    
-            return redirect('./sent')
-    else:
-        print('Error')     
+
+        # Redirect to /sent even if no user was found so hackers will not know if the user exists
+        return redirect('./sent')   
     context = {
         'form': form,
         'title': 'Forgot password?',

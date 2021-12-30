@@ -30,8 +30,10 @@ class VerifyCodeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
+            'username',
             'resetCode',
         ]
         labels = {
+            'username' : 'Username',
             'resetCode': 'Code',
         }
