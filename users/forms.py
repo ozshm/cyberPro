@@ -37,3 +37,7 @@ class VerifyCodeForm(forms.ModelForm):
             'username' : 'Username',
             'resetCode': 'Code',
         }
+
+class ResetPwdForm(forms.Form):
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    verify_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))

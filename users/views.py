@@ -1,4 +1,4 @@
-from .forms import UserForm, ChangePwdForm, ForgotPwdForm, VerifyCodeForm
+from .forms import UserForm, ChangePwdForm, ForgotPwdForm, VerifyCodeForm, ResetPwdForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -145,7 +145,6 @@ def forgot_pwd_view(request):
         found_user = User.objects.filter(email = email_user)
         if found_user.exists():
             hashed_code = generate_hased_code()
-            print(User.objects.values())
             subject = 'Communication LTD Password Resetting'
             html_message = render_to_string('forgot_pwd/password_reset_email.html', 
             {
@@ -188,8 +187,19 @@ def verify_code_view(request):
         code = form.cleaned_data.get('code') 
         # TODO: Add resetting code verification according to generated code 
         # TODO: How will I know which code belongs to which user, according to email? username? need to add a column to the DB?
-        
-        return redirect('/change-pwd/')
+        found_user = User.objects.filter(username = form.cleaned_data.get('username'))
+        if found_user.exists():
+            login(request, found_user[0],
+                      backend='django.contrib.auth.backends.ModelBackend')
+            response = redirect('/reset-pwd/')
+            response.set_cookie("isAuthenticated", "true")
+            return response
+        else:
+            context = {
+            'form': form,
+            'page_name': 'verify reset code',
+            }
+            return render(request, "forgot_pwd/password_reset_verify_code.html", context)
     else:
         print('Error')
     context = {
@@ -197,3 +207,29 @@ def verify_code_view(request):
         'page_name': 'verify reset code',
     }
     return render(request, "forgot_pwd/password_reset_verify_code.html", context)
+
+def reset_pwd_view(request):
+    form = ResetPwdForm(request.POST or None)
+    if form.is_valid():
+        if not is_difference_password(form.cleaned_data['new_password'], form.cleaned_data['verify_password']):
+            messages.info(request, "The passwords not match, please try again.")
+            context = {
+            'form': form,
+            'page_name': 'reset password',
+            }
+            return render(request, "users/user_reset_pwd.html", context)
+        if not is_valid_password(form.cleaned_data['new_password']):
+            messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            context = {
+            'form': form,
+            'page_name': 'reset password',
+            }
+            return render(request, "users/user_reset_pwd.html", context)
+        return redirect('/change-pwd/done')
+    else:
+        print('Error')
+    context = {
+        'form': form,
+        'page_name': 'reset password',
+    }
+    return render(request, "users/user_reset_pwd.html", context)
