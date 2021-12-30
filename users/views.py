@@ -146,7 +146,6 @@ def forgot_pwd_view(request):
         if found_user.exists():
             hashed_code = generate_hased_code()
             print(User.objects.values())
-            found_user.cyberproUser.resetCode = hashed_code
             subject = 'Communication LTD Password Resetting'
             html_message = render_to_string('forgot_pwd/password_reset_email.html', 
             {
