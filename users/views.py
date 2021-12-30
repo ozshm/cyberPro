@@ -70,7 +70,7 @@ def user_create_view(request):
         form = UserForm()
     context = {
         'form': form,
-        'page_name': 'login',
+        'page_name': 'register',
     }
 
     return render(request, "users/user_create.html", context)
@@ -107,6 +107,7 @@ def login_request(request):
     return render(request=request, template_name="../templates/login.html",
      context={
          "login_form": form,
+         "page_name": "login",
         })
 
 def user_change_pwd_view(request):
