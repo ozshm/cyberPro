@@ -97,6 +97,7 @@ def login_request(request):
                 # print("login!!!!")
                 response = redirect('/clients')
                 response.set_cookie("isAuthenticated", "true")
+                response.set_cookie("userName", username)
                 return response
             else:
                print("error")
@@ -128,7 +129,9 @@ def user_change_pwd_view(request):
 def logout_request(request):
     print("sup")
     logout(request)
-    return redirect('/')
+    response = redirect('/')
+    response.delete_cookie('userName')
+    return response 
 
 
 def generate_hased_code():
