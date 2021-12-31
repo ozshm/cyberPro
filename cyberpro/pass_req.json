@@ -4,11 +4,11 @@
     "password_history": 3,
   
     "password_content": {
-      "min_length_digit": 1,
-      "min_length_alpha": 0,
-      "min_length_special": 1,
-      "min_length_lower": 1,
-      "min_length_upper": 1,
+      "min_length_digit": 2,
+      "min_length_alpha": 2,
+      "min_length_special": 2,
+      "min_length_lower": 2,
+      "min_length_upper": 2,
       "special_characters": "~!@#$%^&*()_+{}\":;'[]"
     },
   

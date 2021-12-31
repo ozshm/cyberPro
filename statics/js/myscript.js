@@ -74,14 +74,25 @@ function insecure_design(){
 }
 
 function secure_clients_page(){
-    document.getElementById("insecure-form").style.display = "none";
-    document.getElementById("secure-form").style.display = "block";
-
+    var insecureForm = document.getElementById("insecure-form");
+    var secureForm = document.getElementById("secure-form");
+    if (insecureForm !== null) {
+        insecureForm.style.display = "none";
+    }
+    if (secureForm !== null) {
+        secureForm.style.display = "block";
+    }
 }
 
 function insecure_clients_page(){
-    document.getElementById("secure-form").style.display = "none";
-    document.getElementById("insecure-form").style.display = "block";
+    var insecureForm = document.getElementById("insecure-form");
+    var secureForm = document.getElementById("secure-form");
+    if (insecureForm !== null) {
+        insecureForm.style.display = "block";
+    }
+    if (secureForm !== null) {
+        secureForm.style.display = "none";
+    }
 
 }
 

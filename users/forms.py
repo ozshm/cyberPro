@@ -22,3 +22,18 @@ class ChangePwdForm(forms.ModelForm):
             'existingPassword': 'Existing Password',
             'newPassword': 'New Password',
         }
+
+class ForgotPwdForm(forms.Form):
+    email_address = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
+
+class VerifyCodeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'resetCode',
+        ]
+        labels = {
+            'username' : 'Username',
+            'resetCode': 'Code',
+        }

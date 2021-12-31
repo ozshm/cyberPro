@@ -46,6 +46,13 @@ INSTALLED_APPS = [
     'clients',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'communicationtld1@gmail.com'     #sender's email-id
+EMAIL_HOST_PASSWORD = 'CyberSecurityProject1!'      #password associated with above email-id
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -168,4 +175,5 @@ PASSWORD_HASHERS = [
     # Default Haser - Uses PBKDF2 + HMAC + SHA256
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher'
 ]

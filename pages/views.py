@@ -17,12 +17,7 @@ def redirect_to_login_view(request, *args, **kwargs):
 #     }
 #     return render(request, 'login.html', my_context)
 
-def forget_pwd_view(request, *args, **kwargs):
-    my_context = {
-        'title': 'forget password',
-        'page_name': 'forget_pwd',
-    }
-    return render(request, 'forget_pwd.html', my_context)
+
 
 def about_view(request, *args, **kwargs):
     my_context = {
