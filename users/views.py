@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 import os
 import json
@@ -77,9 +77,43 @@ def user_create_view(request):
 
 
 def login_request(request):
+
+    users = None
+    badPass = None
+    badCred = None
+
+    if request.method == 'GET':
+        
+        username = request.GET.get('username', None)
+        password = request.GET.get('password', None)
+        # print (" GET REQUEST!!!!!!")
+        # print(username, password)
+
+        if username and password:
+            user = User.objects.raw(f"SELECT * FROM auth_user WHERE username = '%s'" % (username))
+
+            if (len(list(user)) == 1):
+                matchcheck = check_password(password, user[0].password)
+                if (matchcheck):
+                    user = authenticate(username=username, password=password)
+                    login(request, user,
+                      backend='django.contrib.auth.backends.ModelBackend')
+                    response = redirect('/clients')
+                    response.set_cookie("isAuthenticated", "true")
+                    response.set_cookie("userName", username)
+                    return response
+                else:
+                    # password not matched
+                    badPass = True
+
+            else: 
+                # sqli 
+                users = list(user) 
+                print(users)
+
     # The request method 'POST' indicates
     # that the form was submitted
-    if request.method == "POST":
+    elif request.method == "POST":
         # Create a form instance with the submitted data
         form = AuthenticationForm(request, data=request.POST)
         # Validate the form
@@ -96,6 +130,7 @@ def login_request(request):
                 # Redirect to homepage
                 response = redirect('/clients')
                 response.set_cookie("isAuthenticated", "true")
+                response.set_cookie("userName", username)
                 return response
             return HttpResponseRedirect("/login")
     form = AuthenticationForm()
@@ -103,6 +138,9 @@ def login_request(request):
      context={
          "login_form": form,
          "page_name": "login",
+         "badPass": badPass,
+         "title": 'Login',
+         "users": users,
         })
 
 def user_change_pwd_view(request):
@@ -135,7 +173,9 @@ def user_change_pwd_view(request):
 
 def logout_request(request):
     logout(request)
-    return redirect('/')
+    response = redirect('/')
+    response.delete_cookie('userName')
+    return response 
 
 
 def generate_hased_code():

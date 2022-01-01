@@ -4,8 +4,8 @@ from django.http import HttpResponse
 
 def redirect_to_login_view(request, *args, **kwargs):
     response = redirect('/login')
-    response.set_cookie('isSecure', 'true')
-    response.set_cookie('isAuthenticated', 'false')
+    response.set_cookie('isSecure', "true")
+    response.set_cookie('isAuthenticated', "false")
     return response
 
 def about_view(request, *args, **kwargs):
