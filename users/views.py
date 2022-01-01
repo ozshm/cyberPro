@@ -109,7 +109,7 @@ def user_change_pwd_view(request):
     form = ChangePwdForm(request.POST or None)
     context = {
         'form': form,
-        'page_name': 'change password',
+        'page_name': 'change-pwd',
     }
     if form.is_valid():
         if not is_difference_password(form.cleaned_data['new_password'], form.cleaned_data['verify_password']):
