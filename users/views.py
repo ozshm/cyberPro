@@ -140,7 +140,8 @@ def login_request(request):
         else:
             attemps_number = attemps_number + 1
     form = AuthenticationForm()
-    if(attemps_number >= 3):
+    req = load_user_create_requierments("cyberpro/pass_req.json")
+    if(attemps_number >= req['login_attemps_limit']):
         tooManyAttemps = True
     response =  render(request=request, template_name="../templates/login.html",
      context={
