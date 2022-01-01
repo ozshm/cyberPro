@@ -107,14 +107,29 @@ def login_request(request):
 
 def user_change_pwd_view(request):
     form = ChangePwdForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        form = ChangePwdForm()
-        return redirect('/done')
     context = {
         'form': form,
         'page_name': 'change password',
     }
+    if form.is_valid():
+        if not is_difference_password(form.cleaned_data['new_password'], form.cleaned_data['verify_password']):
+            messages.info(request, "The passwords not match, please try again.")
+            return render(request, "users/user_change_pwd.html", context)
+        if not is_valid_password(form.cleaned_data['new_password']):
+            messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            return render(request, "users/user_change_pwd.html", context)
+        u = User.objects.get(username = request.user)
+        if(u is not None):
+            if(u.check_password(form.cleaned_data['existing_password'])):
+                u.set_password(form.cleaned_data['new_password'])
+                u.save()
+                return redirect('/change-pwd/done')
+            else:
+                messages.info(request, "The exising password is not correct, please try again.")
+                return render(request, "users/user_change_pwd.html", context)
+        else:
+            messages.info(request, "There was an error, please try again.")
+            return render(request, "users/user_change_pwd.html", context)
     return render(request, "users/user_change_pwd.html", context)
 
 
