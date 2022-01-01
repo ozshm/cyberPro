@@ -8,17 +8,6 @@ def redirect_to_login_view(request, *args, **kwargs):
     response.set_cookie('isAuthenticated', "false")
     return response
 
-# def login_view(request, *args, **kwargs):
-#     # if request.COOKIES['isSecure'] == 'secure':
-#     #     print("in login page, we are secure!")
-#     my_context = {
-#         'title': 'welcome test',
-#         'page_name': 'login',
-#     }
-#     return render(request, 'login.html', my_context)
-
-
-
 def about_view(request, *args, **kwargs):
     my_context = {
         'title': 'about',
