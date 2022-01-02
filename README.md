@@ -16,8 +16,6 @@ A Web Project as part of the computer security course at HIT college.
     - Change password.
     - Forgot Password for existing user.
     - Clients
-* Creating a connection using the TLS 1.2 protocol.
-* Use of self-signed certificate (open-ssl).
 * Complex settings and requirements The login passwords will be managed using a configuration file.
 * Sending a confirmation email to the user in case the login password is forgotten.
 * Use of SQL Injection (SQLi) and XSS techniques.
