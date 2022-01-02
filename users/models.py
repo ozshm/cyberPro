@@ -1,17 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-
-class User(models.Model):
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
-    resetCode = models.CharField(max_length=50)
-    lastPasswords = models.JSONField()
-    email_address = models.EmailField(max_length=50)
-
-class ChangePwd(models.Model):
-    existingPassword = models.CharField(max_length=50)
-    newPassword = models.CharField(max_length=50)
     
-# class VerifyCode(models.Model):
-#     resetCode = models.CharField(max_length=50)
+class UsersData(AbstractUser):
+    resetCode = models.CharField(max_length=40, blank=True, default='', unique=True, null=True)
+    lastPasswords = models.JSONField(blank=True, default='')
+    
