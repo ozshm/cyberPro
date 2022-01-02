@@ -81,13 +81,12 @@ def login_request(request):
     users = None
     badPass = None
     badCred = None
+    tooManyAttemps = None
+    attemps_number = int(request.COOKIES['attemps_number'])
 
     if request.method == 'GET':
-        
         username = request.GET.get('username', None)
         password = request.GET.get('password', None)
-        # print (" GET REQUEST!!!!!!")
-        # print(username, password)
 
         if username and password:
             user = User.objects.raw(f"SELECT * FROM auth_user WHERE username = '%s'" % (username))
@@ -100,16 +99,19 @@ def login_request(request):
                       backend='django.contrib.auth.backends.ModelBackend')
                     response = redirect('/clients')
                     response.set_cookie("isAuthenticated", "true")
+                    response.set_cookie('attemps_number', 0)
                     response.set_cookie("userName", username)
                     return response
                 else:
                     # password not matched
+                    attemps_number = attemps_number + 1
                     badPass = True
 
             else: 
                 # sqli 
                 users = list(user) 
                 print(users)
+                attemps_number = attemps_number + 1
 
     # The request method 'POST' indicates
     # that the form was submitted
@@ -131,17 +133,27 @@ def login_request(request):
                 response = redirect('/clients')
                 response.set_cookie("isAuthenticated", "true")
                 response.set_cookie("userName", username)
+                response.set_cookie('attemps_number', 0)
                 return response
-            return HttpResponseRedirect("/login")
+            else:
+                attemps_number = attemps_number + 1
+        else:
+            attemps_number = attemps_number + 1
     form = AuthenticationForm()
-    return render(request=request, template_name="../templates/login.html",
+    req = load_user_create_requierments("cyberpro/pass_req.json")
+    if(attemps_number >= req['login_attemps_limit']):
+        tooManyAttemps = True
+    response =  render(request=request, template_name="../templates/login.html",
      context={
          "login_form": form,
          "page_name": "login",
          "badPass": badPass,
          "title": 'Login',
          "users": users,
+         "tooManyAttemps": tooManyAttemps,
         })
+    response.set_cookie('attemps_number', attemps_number)
+    return response
 
 def user_change_pwd_view(request):
     form = ChangePwdForm(request.POST or None)
