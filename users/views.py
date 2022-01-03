@@ -167,21 +167,12 @@ def user_change_pwd_view(request):
     }
     if form.is_valid():
         if not is_difference_password(form.cleaned_data['new_password'], form.cleaned_data['verify_password']):
-<<<<<<< HEAD
             messages.info(request, "The passwords do not match, please try again.")
             return render(request, "users/user_change_pwd.html", context = context)
         if not is_valid_password(form.cleaned_data['new_password']):
             messages.info(request, "The password you entered does not meet the requirements, please try again.")
             return render(request, "users/user_change_pwd.html", context = context)
         u = UsersData.objects.get(username = request.user)
-=======
-            messages.info(request, "The passwords not match, please try again.")
-            return render(request, "users/user_change_pwd.html", context=context)
-        if not is_valid_password(form.cleaned_data['new_password']):
-            messages.info(request, "The password you entered does not meet the requirements, please try again.")
-            return render(request, "users/user_change_pwd.html", context=context)
-        u = User.objects.get(username = request.user)
->>>>>>> master
         if(u is not None):
             if(u.check_password(form.cleaned_data['existing_password'])):
                 if(passwordNotInLasts(u, form.cleaned_data['existing_password'], form.cleaned_data['new_password'])):
@@ -195,19 +186,11 @@ def user_change_pwd_view(request):
                     return render(request, "users/user_change_pwd.html", context = context)
             else:
                 messages.info(request, "The exising password is not correct, please try again.")
-<<<<<<< HEAD
                 return render(request, "users/user_change_pwd.html", context = context)
         else:
             messages.info(request, "There was an error, please try again.")
             return render(request, "users/user_change_pwd.html", context = context)
     return render(request, "users/user_change_pwd.html", context = context)
-=======
-                return render(request, "users/user_change_pwd.html", context=context)
-        else:
-            messages.info(request, "There was an error, please try again.")
-            return render(request, "users/user_change_pwd.html", context=context)
-    return render(request, "users/user_change_pwd.html", context=context)
->>>>>>> master
 
 
 def logout_request(request):
