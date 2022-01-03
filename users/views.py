@@ -1,5 +1,5 @@
 from .forms import UserForm, ChangePwdForm, ForgotPwdForm, VerifyCodeForm, ResetPwdForm
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
@@ -11,8 +11,12 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.hashers import make_password, check_password
 
+from .models import UsersData
+
 import os
 import json
+import hashlib
+import random
 
 # Create your views here. 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -56,9 +60,9 @@ def user_create_view(request):
             messages.info(request, "The password you entered does not meet the requirements, please try again.")
             return HttpResponseRedirect('/register/')
         if not is_difference_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
-            messages.info(request, "The passwords that not match, please try again.")
+            messages.info(request, "The passwords do not match, please try again.")
             return HttpResponseRedirect('/register/')
-        user = User.objects.create_user(
+        user = UsersData.objects.create_user(
                     form.cleaned_data['username'],
                     form.cleaned_data['email'],
                     form.cleaned_data['password']
@@ -163,12 +167,21 @@ def user_change_pwd_view(request):
     }
     if form.is_valid():
         if not is_difference_password(form.cleaned_data['new_password'], form.cleaned_data['verify_password']):
+<<<<<<< HEAD
+            messages.info(request, "The passwords do not match, please try again.")
+            return render(request, "users/user_change_pwd.html", context = context)
+        if not is_valid_password(form.cleaned_data['new_password']):
+            messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            return render(request, "users/user_change_pwd.html", context = context)
+        u = UsersData.objects.get(username = request.user)
+=======
             messages.info(request, "The passwords not match, please try again.")
             return render(request, "users/user_change_pwd.html", context=context)
         if not is_valid_password(form.cleaned_data['new_password']):
             messages.info(request, "The password you entered does not meet the requirements, please try again.")
             return render(request, "users/user_change_pwd.html", context=context)
         u = User.objects.get(username = request.user)
+>>>>>>> master
         if(u is not None):
             if(u.check_password(form.cleaned_data['existing_password'])):
                 u.set_password(form.cleaned_data['new_password'])
@@ -176,11 +189,19 @@ def user_change_pwd_view(request):
                 return redirect('/change-pwd/done')
             else:
                 messages.info(request, "The exising password is not correct, please try again.")
+<<<<<<< HEAD
+                return render(request, "users/user_change_pwd.html", context = context)
+        else:
+            messages.info(request, "There was an error, please try again.")
+            return render(request, "users/user_change_pwd.html", context = context)
+    return render(request, "users/user_change_pwd.html", context = context)
+=======
                 return render(request, "users/user_change_pwd.html", context=context)
         else:
             messages.info(request, "There was an error, please try again.")
             return render(request, "users/user_change_pwd.html", context=context)
     return render(request, "users/user_change_pwd.html", context=context)
+>>>>>>> master
 
 
 def logout_request(request):
@@ -190,20 +211,13 @@ def logout_request(request):
     return response 
 
 
-def generate_hased_code():
-    # Random password does not include letters/numbers that are similar, like i,l,I,1,0,o to avoid user confusion
-    rand_code = User.objects.make_random_password(length=10, allowed_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789')
-    hashed_code = make_password(rand_code, salt=None, hasher='sha1')
-    hashed_code = hashed_code.split("$")[2]
-    return hashed_code
-
 def forgot_pwd_view(request):
     form = ForgotPwdForm(request.POST or None)
     if form.is_valid():
         email_user = form.cleaned_data.get('email_address')
-        found_user = User.objects.filter(email = email_user)
+        found_user = UsersData.objects.filter(email = email_user)
         if found_user.exists():
-            hashed_code = generate_hased_code()
+            hashed_code = hashlib.sha1(str(random.getrandbits(10)).encode('utf-8')).hexdigest()
             subject = 'Communication LTD Password Resetting'
             html_message = render_to_string('forgot_pwd/password_reset_email.html', 
             {
@@ -216,7 +230,10 @@ def forgot_pwd_view(request):
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [email_user, ]
             send_mail( subject, plain_message, email_from, recipient_list )
-
+            # Saving hashed_code to the user's db record for authentication
+            found_user = UsersData.objects.get(email = email_user)
+            found_user.resetCode = hashed_code
+            found_user.save()
         # Redirect to /sent even if no user was found so hackers will not know if the user exists
         return redirect('./sent')   
     context = {
@@ -224,46 +241,49 @@ def forgot_pwd_view(request):
         'title': 'Forgot password?',
         'page_name': 'forgot_pwd',
     }
-    return render(request, 'forgot_pwd/password_reset_form.html', context)
+    return render(request, 'forgot_pwd/password_reset_form.html', context = context)
 
 def email_sent_view(request):
     context = {
         'title': 'Password resetting email sent',
         'page_name': 'sent',
     }
-    return render(request, 'forgot_pwd/password_reset_sent.html', context)
+    return render(request, 'forgot_pwd/password_reset_sent.html', context = context)
 
 def user_changed_pwd_successfully_view(request):
     context = {
         'title': 'Password changed successfully',
         'page_name': 'done',
     }
-    return render(request, 'forgot_pwd/password_reset_complete.html', context)
+    return render(request, 'forgot_pwd/password_reset_complete.html', context = context)
 
 def verify_code_view(request):
     form = VerifyCodeForm(request.POST or None)
     if form.is_valid():
-        code = form.cleaned_data.get('code') 
-        # TODO: Add resetting code verification according to generated code 
-        # TODO: How will I know which code belongs to which user, according to email? username? need to add a column to the DB?
-        found_user = User.objects.filter(username = form.cleaned_data.get('username'))
+        input_username = form.cleaned_data.get('username')
+        input_code = form.cleaned_data.get('reset_code')
+        found_user = UsersData.objects.filter(username = input_username, resetCode = input_code)
         if found_user.exists():
             login(request, found_user[0],
                       backend='django.contrib.auth.backends.ModelBackend')
             response = redirect('/reset-pwd/')
             response.set_cookie("isAuthenticated", "true")
+            found_user = UsersData.objects.get(username = input_username)
+            found_user.resetCode = None
+            found_user.save() 
             return response
         else:
+            form = VerifyCodeForm()
             context = {
             'form': form,
             'page_name': 'verify reset code',
             }
-            return render(request, "forgot_pwd/password_reset_verify_code.html", context)
+            return render(request, "forgot_pwd/password_reset_verify_code.html", context = context)
     context = {
         'form': form,
         'page_name': 'verify reset code',
     }
-    return render(request, "forgot_pwd/password_reset_verify_code.html", context)
+    return render(request, "forgot_pwd/password_reset_verify_code.html", context = context)
 
 def reset_pwd_view(request):
     form = ResetPwdForm(request.POST or None)
@@ -282,7 +302,7 @@ def reset_pwd_view(request):
             'page_name': 'reset password',
             }
             return render(request, "users/user_reset_pwd.html", context)
-        u = User.objects.get(username = request.user)
+        u = UsersData.objects.get(username = request.user)
         if(u is not None):
             u.set_password(form.cleaned_data['new_password'])
             u.save()
@@ -292,10 +312,10 @@ def reset_pwd_view(request):
                 'form': form,
                 'page_name': 'reset password',
             }
-            return render(request, "users/user_reset_pwd.html", context)
+            return render(request, "users/user_reset_pwd.html", context = context)
     else:
         context = {
             'form': form,
             'page_name': 'reset password',
         }
-        return render(request, "users/user_reset_pwd.html", context)
+        return render(request, "users/user_reset_pwd.html", context = context)
