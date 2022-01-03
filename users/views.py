@@ -128,7 +128,9 @@ def user_change_pwd_view(request):
                 if(passwordNotInLasts(u, form.cleaned_data['existing_password'], form.cleaned_data['new_password'])):
                     u.set_password(form.cleaned_data['new_password'])
                     u.save()
-                    return redirect('/change-pwd/done')
+                    response = redirect('/change-pwd/done')
+                    response.set_cookie("isAuthenticated", "false")
+                    return response
                 else:
                     messages.info(request, "You already used this password, please try again.")
                     return render(request, "users/user_change_pwd.html", context = context)
@@ -242,7 +244,9 @@ def reset_pwd_view(request):
             if(passwordNotInLasts(u, u.get('password'), form.cleaned_data['new_password'])):
                     u.set_password(form.cleaned_data['new_password'])
                     u.save()
-                    return redirect('/change-pwd/done')
+                    response = redirect('/change-pwd/done')
+                    response.set_cookie("isAuthenticated", "false")
+                    return response
             else:
                 messages.info(request, "You already used this password, please try again.")
                 return render(request, "users/user_change_pwd.html", context = context)
