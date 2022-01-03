@@ -125,9 +125,13 @@ def user_change_pwd_view(request):
         u = UsersData.objects.get(username = request.user)
         if(u is not None):
             if(u.check_password(form.cleaned_data['existing_password'])):
-                u.set_password(form.cleaned_data['new_password'])
-                u.save()
-                return redirect('/change-pwd/done')
+                if(passwordNotInLasts(u, form.cleaned_data['existing_password'], form.cleaned_data['new_password'])):
+                    u.set_password(form.cleaned_data['new_password'])
+                    u.save()
+                    return redirect('/change-pwd/done')
+                else:
+                    messages.info(request, "You already used this password, please try again.")
+                    return render(request, "users/user_change_pwd.html", context = context)
             else:
                 messages.info(request, "The exising password is not correct, please try again.")
                 return render(request, "users/user_change_pwd.html", context = context)
@@ -235,9 +239,13 @@ def reset_pwd_view(request):
             return render(request, "users/user_reset_pwd.html", context)
         u = UsersData.objects.get(username = request.user)
         if(u is not None):
-            u.set_password(form.cleaned_data['new_password'])
-            u.save()
-            return redirect('/change-pwd/done')
+            if(passwordNotInLasts(u, u.get('password'), form.cleaned_data['new_password'])):
+                    u.set_password(form.cleaned_data['new_password'])
+                    u.save()
+                    return redirect('/change-pwd/done')
+            else:
+                messages.info(request, "You already used this password, please try again.")
+                return render(request, "users/user_change_pwd.html", context = context)
         else:
             context = {
                 'form': form,
@@ -250,3 +258,39 @@ def reset_pwd_view(request):
             'page_name': 'reset password',
         }
         return render(request, "users/user_reset_pwd.html", context = context)
+
+def passwordNotInLasts(user, exisiting_passwprd, new_password):
+    policy = load_user_create_requierments("cyberpro/pass_req.json")
+    if(policy['password_history'] <= 0):
+        return True
+    # Same password
+    if(exisiting_passwprd == new_password):
+        return False
+    # First change
+    if (user.lastPasswords == ''):
+        passwordsObj = [
+            {
+                "passwords": [exisiting_passwprd]
+            }
+        ]
+        user.lastPasswords = json.dumps(passwordsObj)
+        user.save()
+        return True
+    else:
+        passwordsObj = json.loads(user.lastPasswords)
+        passwordsObj = passwordsObj[0]['passwords']
+        for password in passwordsObj:
+            if (password == new_password):
+                return False
+        # delete first saved password
+        if(len(passwordsObj) == policy['password_history'] -1):
+            del passwordsObj[0]
+        passwordsObj.append(exisiting_passwprd)
+        passwordsObj = [
+            {
+                "passwords": passwordsObj
+            }
+        ]
+        user.lastPasswords = json.dumps(passwordsObj)
+        user.save()
+        return True
