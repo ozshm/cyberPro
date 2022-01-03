@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 from .models import UsersData
 
@@ -81,9 +81,43 @@ def user_create_view(request):
 
 
 def login_request(request):
+
+    users = None
+    badPass = None
+    badCred = None
+
+    if request.method == 'GET':
+        
+        username = request.GET.get('username', None)
+        password = request.GET.get('password', None)
+        # print (" GET REQUEST!!!!!!")
+        # print(username, password)
+
+        if username and password:
+            user = User.objects.raw(f"SELECT * FROM auth_user WHERE username = '%s'" % (username))
+
+            if (len(list(user)) == 1):
+                matchcheck = check_password(password, user[0].password)
+                if (matchcheck):
+                    user = authenticate(username=username, password=password)
+                    login(request, user,
+                      backend='django.contrib.auth.backends.ModelBackend')
+                    response = redirect('/clients')
+                    response.set_cookie("isAuthenticated", "true")
+                    response.set_cookie("userName", username)
+                    return response
+                else:
+                    # password not matched
+                    badPass = True
+
+            else: 
+                # sqli 
+                users = list(user) 
+                print(users)
+
     # The request method 'POST' indicates
     # that the form was submitted
-    if request.method == "POST":
+    elif request.method == "POST":
         # Create a form instance with the submitted data
         form = AuthenticationForm(request, data=request.POST)
         # Validate the form
@@ -100,6 +134,7 @@ def login_request(request):
                 # Redirect to homepage
                 response = redirect('/clients')
                 response.set_cookie("isAuthenticated", "true")
+                response.set_cookie("userName", username)
                 return response
             return HttpResponseRedirect("/login")
     form = AuthenticationForm()
@@ -107,6 +142,9 @@ def login_request(request):
      context={
          "login_form": form,
          "page_name": "login",
+         "badPass": badPass,
+         "title": 'Login',
+         "users": users,
         })
 
 def user_change_pwd_view(request):
@@ -117,12 +155,21 @@ def user_change_pwd_view(request):
     }
     if form.is_valid():
         if not is_difference_password(form.cleaned_data['new_password'], form.cleaned_data['verify_password']):
+<<<<<<< HEAD
             messages.info(request, "The passwords do not match, please try again.")
             return render(request, "users/user_change_pwd.html", context = context)
         if not is_valid_password(form.cleaned_data['new_password']):
             messages.info(request, "The password you entered does not meet the requirements, please try again.")
             return render(request, "users/user_change_pwd.html", context = context)
         u = UsersData.objects.get(username = request.user)
+=======
+            messages.info(request, "The passwords not match, please try again.")
+            return render(request, "users/user_change_pwd.html", context=context)
+        if not is_valid_password(form.cleaned_data['new_password']):
+            messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            return render(request, "users/user_change_pwd.html", context=context)
+        u = User.objects.get(username = request.user)
+>>>>>>> master
         if(u is not None):
             if(u.check_password(form.cleaned_data['existing_password'])):
                 u.set_password(form.cleaned_data['new_password'])
@@ -130,16 +177,26 @@ def user_change_pwd_view(request):
                 return redirect('/change-pwd/done')
             else:
                 messages.info(request, "The exising password is not correct, please try again.")
+<<<<<<< HEAD
                 return render(request, "users/user_change_pwd.html", context = context)
         else:
             messages.info(request, "There was an error, please try again.")
             return render(request, "users/user_change_pwd.html", context = context)
     return render(request, "users/user_change_pwd.html", context = context)
+=======
+                return render(request, "users/user_change_pwd.html", context=context)
+        else:
+            messages.info(request, "There was an error, please try again.")
+            return render(request, "users/user_change_pwd.html", context=context)
+    return render(request, "users/user_change_pwd.html", context=context)
+>>>>>>> master
 
 
 def logout_request(request):
     logout(request)
-    return redirect('/')
+    response = redirect('/')
+    response.delete_cookie('userName')
+    return response 
 
 
 def forgot_pwd_view(request):

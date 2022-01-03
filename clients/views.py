@@ -44,7 +44,7 @@ def client_create_view(request):
         'page_name': 'clients',
         'client_fname': clientFirstName,
         'client_lname': clientLastName,
-        'isSecure': request.COOKIES['isSecure'] == 'true',
+        'isSecure': request.COOKIES['isSecure'],
         'title': 'Clients',
         'c': res
     }

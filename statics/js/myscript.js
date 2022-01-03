@@ -22,7 +22,7 @@ function getCookie(cname) {
 
 function getSecureCookie() {
     var dc = document.cookie;
-    return dc.split(';')
+    return dc.split(';');
 }
 
 function setCookie(cname, cvalue, exdays = 2) {
@@ -33,29 +33,39 @@ function setCookie(cname, cvalue, exdays = 2) {
   }
 
   function toggle_clicked(toggle_button){
-    let toggle = document.getElementById("toggle-button")
+    let toggle = document.getElementById("toggle-button");
     if (toggle.checked){
         setCookie('isSecure', 'true')
-        secure_design()
-        secure_clients_page()
-        clearURL()
+        secure_design();
+        secure_clients_page();
+        secure_login_page();
+        console.log("toggle set to secure!!");
+        clearURL();
+        
+        
     } else {
-        setCookie('isSecure', 'false')
-        insecure_design()
-        insecure_clients_page()
+        console.log("toggle set to insecure!!");
+        setCookie('isSecure', 'false');
+        insecure_design();
+        insecure_clients_page();
+        insecure_login_page();
+
     }
+
 };
 
 function update_toggle(){
     console.log(getCookie('isSecure'))
     if (getCookie('isSecure') == 'true'){
         document.getElementById("toggle-button").setAttribute("checked", "checked");
-        secure_design()
-        secure_clients_page()
+        secure_design();
+        secure_clients_page();
+        secure_login_page();
     } else{
         document.getElementById("toggle-button").removeAttribute("checked");
-        insecure_design()
-        insecure_clients_page()
+        insecure_design();
+        insecure_clients_page();
+        insecure_login_page();
     }
 
 }
@@ -93,8 +103,35 @@ function insecure_clients_page(){
     if (secureForm !== null) {
         secureForm.style.display = "none";
     }
-
 }
+
+
+function secure_login_page(){
+    var insecureForm = document.getElementById("insecure-form-login");
+    var secureForm = document.getElementById("secure-form-login");
+
+    if (insecureForm !== null) {
+        insecureForm.style.display = "none";
+    }
+    if (secureForm !== null) {
+        secureForm.style.display = "block";
+    }
+}
+
+
+function insecure_login_page(){
+    var insecureForm = document.getElementById("insecure-form-login");
+    var secureForm = document.getElementById("secure-form-login");
+
+    if (insecureForm !== null) {
+        insecureForm.style.display = "block";
+    }
+    if (secureForm !== null) {
+        secureForm.style.display = "none";
+    }
+}
+
+
 
 function clearURL(){
     let currentURL = document.URL
