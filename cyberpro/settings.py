@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os, json
+from dotenv import load_dotenv
+load_dotenv()  # loads the configs from .env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -52,8 +54,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'communicationtld1@gmail.com'         #sender's email-id
-EMAIL_HOST_PASSWORD = 'CyberProjStrongPass123!'         #password associated with above email-id
+EMAIL_HOST_USER = str(os.getenv('EMAIL_USER'))              #sender's email-id
+EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_PASSWORD'))      #password associated with above email-id
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
