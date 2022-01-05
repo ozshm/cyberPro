@@ -96,7 +96,7 @@ def user_create_view(request):
             user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username_check))
             if (len(list(user)) != 0):
                 messages.info(request, "The user name is not valid")
-               return render(request,'users/user_create.html', context = {'form':form})
+                return render(request,'users/user_create.html', context = {'form':form})
             user = UsersData.objects.create_user(
                         form.cleaned_data['username'],
                         form.cleaned_data['email'],
