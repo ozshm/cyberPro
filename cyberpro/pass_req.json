@@ -1,14 +1,14 @@
 {
-    "min_length": 10,
+    "min_length": 6,
     
     "password_history": 3,
   
     "password_content": {
-      "min_length_digit": 2,
-      "min_length_alpha": 2,
-      "min_length_special": 2,
-      "min_length_lower": 2,
-      "min_length_upper": 2,
+      "min_length_digit": 1,
+      "min_length_alpha": 1,
+      "min_length_special": 1,
+      "min_length_lower": 1,
+      "min_length_upper": 0,
       "special_characters": "~!@#$%^&*()_+{}\":;'[]"
     },
   
