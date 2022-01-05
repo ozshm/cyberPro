@@ -65,6 +65,8 @@ def user_create_view(request):
                 messages.info(request, "Are you sure you do not have an account?")
             elif (not is_valid_password(data['password'])):
                 messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            elif not is_difference_password(data['password'], data['password_repeat']):
+                messages.info(request, "The passwords do not match, please try again.")
             else:
                 user = UsersData.objects.create_user(
                     data['username'],
