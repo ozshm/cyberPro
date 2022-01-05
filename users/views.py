@@ -88,15 +88,15 @@ def user_create_view(request):
         if form.is_valid():
             if not is_valid_password(form.cleaned_data['password']):
                 messages.info(request, "The password you entered does not meet the requirements, please try again.")
-                return HttpResponseRedirect('/register/')
+                return render(request,'users/user_create.html', context = {'form':form})
             if not is_difference_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
                 messages.info(request, "The passwords do not match, please try again.")
-                return HttpResponseRedirect('/register/')
+                return render(request,'users/user_create.html', context = {'form':form})
             username_check = form.cleaned_data['username']
             user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username_check))
             if (len(list(user)) != 0):
                 messages.info(request, "The user name is not valid")
-                return HttpResponseRedirect('/register/')
+               return render(request,'users/user_create.html', context = {'form':form})
             user = UsersData.objects.create_user(
                         form.cleaned_data['username'],
                         form.cleaned_data['email'],
