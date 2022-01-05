@@ -3,10 +3,23 @@
 {% block content %}
 
 {% include 'password-policy.html' %}
+<div id="secure-form-register">
+    <form method='POST' style="width:50%;">
+        {{ form.as_p }} {% csrf_token %}
+        <input type='submit' value='Register' />
+    </form>
+</div>
+<div id="insecure-form-register">
+    <form method='GET' style="width:50%;">
+        {{ form.as_p }} {% csrf_token %}
+        <input type='submit' value='Register' />
+    </form>
+    {% if users %}
+      {% for user in users %}
+      <h4> {{ user.username }} </h2>
+      {% endfor %}
+    {% endif %}
+</div>
 
-<form method='POST' style="width:50%;">
-{{ form.as_p }} {% csrf_token %}
-<input type='submit' value='Register' />
-</form>
 
 {% endblock %}

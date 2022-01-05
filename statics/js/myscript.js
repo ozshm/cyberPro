@@ -39,6 +39,7 @@ function setCookie(cname, cvalue, exdays = 2) {
         secure_design();
         secure_clients_page();
         secure_login_page();
+        secure_register_page()
         console.log("toggle set to secure!!");
         clearURL();
         
@@ -49,7 +50,7 @@ function setCookie(cname, cvalue, exdays = 2) {
         insecure_design();
         insecure_clients_page();
         insecure_login_page();
-
+        insecure_register_page()
     }
 
 };
@@ -61,11 +62,13 @@ function update_toggle(){
         secure_design();
         secure_clients_page();
         secure_login_page();
+        secure_register_page()
     } else{
         document.getElementById("toggle-button").removeAttribute("checked");
         insecure_design();
         insecure_clients_page();
         insecure_login_page();
+        insecure_register_page();
     }
 
 }
@@ -118,6 +121,18 @@ function secure_login_page(){
     }
 }
 
+function secure_register_page(){
+    var insecureForm = document.getElementById("insecure-form-register");
+    var secureForm = document.getElementById("secure-form-register");
+
+    if (insecureForm !== null) {
+        insecureForm.style.display = "none";
+    }
+    if (secureForm !== null) {
+        secureForm.style.display = "block";
+    }
+} 
+
 
 function insecure_login_page(){
     var insecureForm = document.getElementById("insecure-form-login");
@@ -131,6 +146,17 @@ function insecure_login_page(){
     }
 }
 
+function insecure_register_page(){
+    var insecureForm = document.getElementById("insecure-form-register");
+    var secureForm = document.getElementById("secure-form-register");
+
+    if (insecureForm !== null) {
+        insecureForm.style.display = "block";
+    }
+    if (secureForm !== null) {
+        secureForm.style.display = "none";
+    }
+}
 
 
 function clearURL(){

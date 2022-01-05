@@ -54,35 +54,70 @@ def is_difference_password(password, password_repeat):
     return password == password_repeat
  
 def user_create_view(request):
-    form = UserForm(request.POST or None)
-    if form.is_valid():
-        if not is_valid_password(form.cleaned_data['password']):
-            messages.info(request, "The password you entered does not meet the requirements, please try again.")
-            return HttpResponseRedirect('/register/')
-        if not is_difference_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
-            messages.info(request, "The passwords do not match, please try again.")
-            return HttpResponseRedirect('/register/')
-        user = UsersData.objects.create_user(
-                    form.cleaned_data['username'],
-                    form.cleaned_data['email'],
-                    form.cleaned_data['password']
+    users = None
+    if request.method == 'GET':
+        if(request.GET):
+            data = request.GET or None
+            username = data['username']
+            user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username))
+            if (len(list(user)) != 0):
+                users = list(user)
+                messages.info(request, "Are you sure you do not have an account?")
+            elif (not is_valid_password(data['password'])):
+                messages.info(request, "The password you entered does not meet the requirements, please try again.")
+            elif not is_difference_password(data['password'], data['password_repeat']):
+                messages.info(request, "The passwords do not match, please try again.")
+            else:
+                user = UsersData.objects.create_user(
+                    data['username'],
+                    data['email'],
+                    data['password']
                 )
-        user.first_name = form.cleaned_data['first_name']
-        user.last_name = form.cleaned_data['last_name']
-        user.phone_number = form.cleaned_data['phone_number']
-        passwordsObj = [
-            {
-                "passwords": [form.cleaned_data['password']]
-            }
-        ]
-        user.lastPasswords = json.dumps(passwordsObj)
-        user.save()
-        form = UserForm()
+                user.first_name = data['first_name']
+                user.last_name = data['last_name']
+                user.phone_number = data['phone_number']
+                passwordsObj = [
+                    {
+                        "passwords": [data['password']]
+                    }
+                ]
+                user.lastPasswords = json.dumps(passwordsObj)
+                user.save()
+    else:
+        form = UserForm(request.POST or None)
+        if form.is_valid():
+            if not is_valid_password(form.cleaned_data['password']):
+                messages.info(request, "The password you entered does not meet the requirements, please try again.")
+                return render(request,'users/user_create.html', context = {'form':form})
+            if not is_difference_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
+                messages.info(request, "The passwords do not match, please try again.")
+                return render(request,'users/user_create.html', context = {'form':form})
+            username_check = form.cleaned_data['username']
+            user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username_check))
+            if (len(list(user)) != 0):
+                messages.info(request, "The user name is not valid")
+                return render(request,'users/user_create.html', context = {'form':form})
+            user = UsersData.objects.create_user(
+                        form.cleaned_data['username'],
+                        form.cleaned_data['email'],
+                        form.cleaned_data['password']
+                    )
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.phone_number = form.cleaned_data['phone_number']
+            passwordsObj = [
+                {
+                    "passwords": [form.cleaned_data['password']]
+                }
+            ]
+            user.lastPasswords = json.dumps(passwordsObj)
+            user.save()
+    form = UserForm()
     context = {
         'form': form,
         'page_name': 'register',
+        'users': users
     }
-
     return render(request, "users/user_create.html", context)
 
 
@@ -120,7 +155,6 @@ def login_request(request):
             else: 
                 # sqli 
                 users = list(user) 
-                print(users)
                 attemps_number = attemps_number + 1
 
     # The request method 'POST' indicates
