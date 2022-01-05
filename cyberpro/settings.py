@@ -55,7 +55,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = str(os.getenv('EMAIL_USER'))              #sender's email-id
-EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_PASSWORD'))      #password associated with above email-id
+EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_PASSWORD')[::2])      #password associated with above email-id
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
