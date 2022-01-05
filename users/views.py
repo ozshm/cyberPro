@@ -99,7 +99,7 @@ def login_request(request):
         password = request.GET.get('password', None)
 
         if username and password:
-            user = User.objects.raw(f"SELECT * FROM auth_user WHERE username = '%s'" % (username))
+            user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username))
 
             if (len(list(user)) == 1):
                 matchcheck = check_password(password, user[0].password)
