@@ -8,7 +8,7 @@ A Web Project as part of the computer security course at HIT college.
 - Itzik Israeli
 - Or Ezra
 
-## Project objectives:
+## Project objectives
 * Establishment of a Python Django infrastructured Web site based on principles of secure development.
 * The Web site includes the following screens:
     - Registration for new users.
