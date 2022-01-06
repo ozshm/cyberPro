@@ -16,12 +16,12 @@ A Web Project as part of the computer security course at HIT college.
     - Change password.
     - Forgot Password for existing user.
     - Clients
-* Complexity settings and requirements of the login passwords are be managed by a configuration file.
+* Complexity settings and requirements of the login passwords are managed by a configuration file.
 * In case the user had forgotten the login password, a resetting email will be sent.
 * SQL Injection (SQLi) and XSS techniques are used.
 
 ## How to run the project
-- This project was created using the Pyphon Django framework.
+- This project was created using the Python Django framework.
 - Make sure to create a python virtual environment.
 
 1. Clone this repository to your local computer
