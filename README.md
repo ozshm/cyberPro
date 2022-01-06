@@ -3,7 +3,7 @@ A Web Project as part of the computer security course at HIT college.
 
 ## Participants
 - Oz Shmuel
-- Karin Magriso
+- Karin Magrisso
 - Sharon Guy
 - Itzik Israeli
 - Or Ezra
