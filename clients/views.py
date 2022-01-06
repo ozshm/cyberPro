@@ -18,7 +18,7 @@ def client_create_view(request):
     else:
         clientFirstName = request.POST.get('fname')
         clientLastName = request.POST.get('lname')
-        if not (clientFirstName.replace(' ', '').isalpha()):
+        if not (clientFirstName.replace(' ', '').isalpha()) or not (clientLastName.replace(' ', '').isalpha()): 
             return render (request, 'http404.html')
 
     if  clientFirstName and clientLastName:
