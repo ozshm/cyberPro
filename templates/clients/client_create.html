@@ -45,7 +45,7 @@
 
 <h3> Last Client Added:</h3>
 {% for client in c %}
-{% if isSecure %}
+{% if isSecure == 'true' %}
 <h3>{{ client.name }} {{ client.lastName }} </h3>
 {% else %}
 <h3>{{ client.name | safe}} {{ client.lastName | safe}} </h3>
