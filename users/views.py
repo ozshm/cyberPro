@@ -55,14 +55,16 @@ def is_difference_password(password, password_repeat):
  
 def user_create_view(request):
     users = None
+    user_new = None
     if request.method == 'GET':
         if(request.GET):
             data = request.GET or None
             username = data['username']
             user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username))
             if (len(list(user)) != 0):
-                users = list(user)
                 messages.info(request, "Are you sure you do not have an account?")
+                if (len(list(user)) > 1):
+                    users = list(user)
             elif (not is_valid_password(data['password'])):
                 messages.info(request, "The password you entered does not meet the requirements, please try again.")
             elif not is_difference_password(data['password'], data['password_repeat']):
@@ -82,21 +84,23 @@ def user_create_view(request):
                     }
                 ]
                 user.lastPasswords = json.dumps(passwordsObj)
+                user_new = user
                 user.save()
     else:
         form = UserForm(request.POST or None)
         if form.is_valid():
+            context = { 'form' : form }
             if not is_valid_password(form.cleaned_data['password']):
                 messages.info(request, "The password you entered does not meet the requirements, please try again.")
-                return render(request,'users/user_create.html', context = {'form':form})
+                return render(request, 'users/user_create.html', context)
             if not is_difference_password(form.cleaned_data['password'], form.cleaned_data['password_repeat']):
                 messages.info(request, "The passwords do not match, please try again.")
-                return render(request,'users/user_create.html', context = {'form':form})
+                return render(request, 'users/user_create.html', context)
             username_check = form.cleaned_data['username']
             user = UsersData.objects.raw(f"SELECT * FROM users_usersdata WHERE username = '%s'" % (username_check))
             if (len(list(user)) != 0):
                 messages.info(request, "The user name is not valid")
-                return render(request,'users/user_create.html', context = {'form':form})
+                return render(request, 'users/user_create.html', context)
             user = UsersData.objects.create_user(
                         form.cleaned_data['username'],
                         form.cleaned_data['email'],
@@ -112,11 +116,13 @@ def user_create_view(request):
             ]
             user.lastPasswords = json.dumps(passwordsObj)
             user.save()
+            user_new = user
     form = UserForm()
     context = {
         'form': form,
         'page_name': 'register',
-        'users': users
+        'users': users,
+        'user_new': user_new,
     }
     return render(request, "users/user_create.html", context)
 
